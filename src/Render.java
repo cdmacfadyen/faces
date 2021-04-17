@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 
 import processing.core.PApplet;
+import processing.core.PVector;
 
 
 public class Render extends PApplet {
@@ -50,11 +51,9 @@ public class Render extends PApplet {
     public void draw() {
         background(255);
         
-        translate(width/2, height/2);
-        scale(0.001f);
-        translate(testFace.triangles.get(20000).p1.x, testFace.triangles.get(20000).p1.y);
+        testFace.scale(0.003f);
+        testFace.translate(new PVector(width/2, height/2));
         testFace.draw();
-
     }
 
     @Override
