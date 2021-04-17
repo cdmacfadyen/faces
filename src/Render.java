@@ -85,6 +85,7 @@ public class Render extends PApplet {
         facesToInterpolate.add(third);
 
         // all evenly weighted for now
+        // faceWeights.add(10f); // for giggles
         faceWeights.add(0.333f);
         faceWeights.add(0.333f);
         faceWeights.add(0.333f);
