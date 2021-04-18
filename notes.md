@@ -115,6 +115,13 @@ and deal with them later.
 Question - Are we doing the shading calculation at the vertices 
 and then averaging that colour across the face of the 
 triangle?
+Yes.
+
+Since the viewpoint is infinitely far away 
+the viewing direction vector is going to 
+be (0,0,1). Could be (0,0,-1) lets check the lecture notes.   
+
+Lectures have wi as (0,0,1) and intensity as 3.
 
 ## Engineering
 So we have the face offsets and 

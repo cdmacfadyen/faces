@@ -96,5 +96,30 @@ public class Triangle implements Comparable<Triangle> {
         p2.add(translateVector);
         p3.add(translateVector);
     }
+
+    public PVector normal() {
+        PVector tangent1 = p2.copy().sub(p1);
+        PVector tangent2 = p3.copy().sub(p1);
+
+        PVector normal = tangent1.cross(tangent2);
+        normal.normalize(); // unit normal
+        
+        return normal;
+    }
+
+
+    public PVector getLambertColour(PVector incidence, float lightIntensity, float diffuseCoefficient) {
+        // find normal
+        // find normal.incidence
+        // return result * intensity * diffusecoeff
+
+        PVector normal = this.normal(); // this. unnecessary but for clarity
+
+        float resultIntensity = normal.dot(incidence);
+        resultIntensity *= lightIntensity;
+        resultIntensity *= diffuseCoefficient;
+
+        return this.colour().mult(resultIntensity);
+    }
     
 }

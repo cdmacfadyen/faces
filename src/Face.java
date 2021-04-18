@@ -114,6 +114,53 @@ public class Face {
         }
     }
 
+    public void draw(
+        ReflectanceModel reflectanceModel,
+        ShadingModel shadingModel,
+        PVector incidence,
+        float lightIntensity,
+        float diffuseCoefficient
+        ) {
+        if(reflectanceModel == ReflectanceModel.MESH_ONLY) {
+            for(int i = 0; i < triangles.size(); i++) {
+                Triangle triangle = triangles.get(i);
+                parent.stroke(0);
+                parent.noFill();
+                // parent.fill(    colour.x, colour.y, colour.z);
+                parent.triangle(
+                    triangle.p1.x, triangle.p1.y,
+                    triangle.p2.x, triangle.p2.y,
+                    triangle.p3.x, triangle.p3.y
+                    );
+            }
+        } else if (reflectanceModel == ReflectanceModel.NONE) {
+            for(int i = 0; i < triangles.size(); i++) {
+                Triangle triangle = triangles.get(i);
+                PVector colour = triangle.colour();
+                parent.stroke(  colour.x, colour.y, colour.z);
+                parent.fill(    colour.x, colour.y, colour.z);
+                parent.triangle(
+                    triangle.p1.x, triangle.p1.y,
+                    triangle.p2.x, triangle.p2.y,
+                    triangle.p3.x, triangle.p3.y
+                    );
+            }
+        } else if (reflectanceModel == ReflectanceModel.LAMBERT) {
+            for(int i = 0; i < triangles.size(); i++) {
+                Triangle triangle = triangles.get(i);
+                PVector lambertColour = triangle.getLambertColour(incidence, lightIntensity, diffuseCoefficient);
+                parent.stroke(  lambertColour.x, lambertColour.y, lambertColour.z);
+                parent.fill(    lambertColour.x, lambertColour.y, lambertColour.z);
+                parent.triangle(
+                    triangle.p1.x, triangle.p1.y,
+                    triangle.p2.x, triangle.p2.y,
+                    triangle.p3.x, triangle.p3.y
+                    );
+            }
+        }
+
+    }
+
     public void scale(float scaleFactor) {
         for(Triangle triangle : triangles) {
             triangle.scale(scaleFactor);
@@ -125,6 +172,23 @@ public class Face {
             triangle.translate(translateVector);
         }
     }
+
+    /**
+     * What do we need to do for flat shading?
+     * Say that all of each triangle is the 
+     * same colour. 
+     * 
+     * To find the colour of the triangle, 
+     * find the normal to the surface of the triangle.
+     * 
+     * Do the dot product of the normal to the triangle 
+     * with the viewing direction, which is 
+     * (0,0,1).
+     * Lectures use intensity as 3 so lets do that.
+     */
+    // public void flatShade(PVector incidence, float intensity, float diffuseCoefficient) {
+    //     PVector tangent1 =  
+    // }
 
     
 
