@@ -134,6 +134,7 @@ public class Face {
                     );
             }
         } else if (reflectanceModel == ReflectanceModel.NONE) {
+            // flat shading
             for(int i = 0; i < triangles.size(); i++) {
                 Triangle triangle = triangles.get(i);
                 PVector colour = triangle.colour();
@@ -146,6 +147,7 @@ public class Face {
                     );
             }
         } else if (reflectanceModel == ReflectanceModel.LAMBERT) {
+            // flat shading
             for(int i = 0; i < triangles.size(); i++) {
                 Triangle triangle = triangles.get(i);
                 PVector lambertColour = triangle.getLambertColour(incidence, lightIntensity, diffuseCoefficient);

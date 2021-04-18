@@ -20,7 +20,12 @@ public class Render extends PApplet {
     ArrayList<FaceParser> facesToInterpolate;
     ArrayList<Float> faceWeights;
     Face faceToDraw;
+    float lightIntensity = 1.0f;
+    PVector lightIncidence = new PVector(0,0,1); 
+    float diffuseCoefficient = 1f;
 
+    ReflectanceModel reflectanceModel;
+    ShadingModel shadingModel;
     public static void main(String[] args) {
 
         if (args.length < 1) {
@@ -42,6 +47,9 @@ public class Render extends PApplet {
     @Override
     public void setup() {
         noLoop();
+        shadingModel = ShadingModel.FLAT_SHADING;
+        reflectanceModel = ReflectanceModel.LAMBERT;
+
         drawingAverage = false;
         // basic
         averageFace = new AverageFace();
@@ -103,7 +111,14 @@ public class Render extends PApplet {
             Face interpolated = new Face(this, averageFace, facesToInterpolate, faceWeights);
             interpolated.scale(0.003f);
             interpolated.translate(new PVector(width/2, height/2));
-            interpolated.draw();
+            // interpolated.draw();
+            interpolated.draw(
+                reflectanceModel,
+                shadingModel,
+                lightIncidence,
+                lightIntensity, 
+                diffuseCoefficient
+                );
             System.out.println("Interpolated");
         }
         System.out.println("Rendered.");
