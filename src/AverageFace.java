@@ -4,6 +4,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * The average face is a special case of the 
+ * general face because it doesn't have any weights  
+ * to apply to the colour or coordinate offsets, and 
+ * in this case I also use it to hold the mesh.
+ */
 public class AverageFace extends FaceParser {
     String index = "000";
     ArrayList<Triple> mesh;

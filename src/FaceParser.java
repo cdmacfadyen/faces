@@ -6,15 +6,17 @@ import java.util.ArrayList;
 
 import processing.core.PVector;
 
+/**
+ * The FaceParser class basically just loads in 
+ * all of the data from the csv files as is 
+ * and holds them to be combined with the average 
+ * face. 
+ */
 public class FaceParser {
-    // ArrayList<PVector> 
-    // so we want everything to be in 
-    // the order it came in here
-    // so that we can index it using the indexes from mesh.csv
-    protected float colourOffsetWeight;
-    protected float pointOffsetWeight;
-    protected ArrayList<PVector> colourOffsets;
-    protected ArrayList<PVector> pointOffsets;
+    protected float colourOffsetWeight; // from tx_ev
+    protected float pointOffsetWeight;  // from sh_ev
+    protected ArrayList<PVector> colourOffsets; // from tx_xxx
+    protected ArrayList<PVector> pointOffsets;  // from sh_xxx
 
     public FaceParser() {
         colourOffsets = new ArrayList<>();

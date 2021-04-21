@@ -3,26 +3,26 @@ import java.util.Collections;
 
 import processing.core.PVector;
 
+/**
+ * Class for holding the face to be 
+ * rendered. 
+ */
+
 public class Face {
     protected ArrayList<Triangle> triangles;
     private Render parent;
 
+    /**
+     * Construction combines
+     * the average face, any number of 
+     * other faces and their respective weights. 
+     */
     public Face(
         Render parent,
         AverageFace average,
         ArrayList<FaceParser> faces, 
         ArrayList<Float> weights
         ) {
-        // combine the faces
-        /**
-         * For every triple in faces, 
-         * make a new triangle where 
-         * p1 is avgface.offsets[triple.first] + face.offsets[triple.first] * face.weight * weights[face]
-         * easy
-         * 
-         * So if I'm just doing it for the average face
-         * its just going to be p1 = avgface.offsets[triple.first]
-         */
         if(faces.size() != weights.size()) {
             System.out.println("Size of faces and weights does not match!");
             System.exit(1);
@@ -31,10 +31,16 @@ public class Face {
         triangles = new ArrayList<>();
         this.parent = parent;
 
+        /**
+         * For every triangle in the mesh, get the 
+         * points in the triangle, find the point and colour 
+         * offsets and combine them with the average face 
+         * to create the actual face. 
+         */
         for(Triple indices : average.mesh) {
-            PVector p1 = average.pointOffsets.get(indices.first).copy(); // starting point
-            PVector p2 = average.pointOffsets.get(indices.second).copy(); // starting point
-            PVector p3 = average.pointOffsets.get(indices.third).copy(); // starting point
+            PVector p1 = average.pointOffsets.get(indices.first).copy();    // starting point
+            PVector p2 = average.pointOffsets.get(indices.second).copy();   // starting point
+            PVector p3 = average.pointOffsets.get(indices.third).copy();    // starting point
 
             PVector c1 = average.colourOffsets.get(indices.first).copy();
             PVector c2 = average.colourOffsets.get(indices.second).copy();
@@ -57,10 +63,11 @@ public class Face {
             triangles.add(triangle);
         }
 
-        Collections.sort(triangles);    // make them in the order we'll draw them. 
+        Collections.sort(triangles);    // make them in the order we'll draw them for the painter's algorithm. 
     }
 
-    public Face(Render parent, AverageFace average) {  // all we want to do is see the average
+    // Constructor when we only want to draw the average face. 
+    public Face(Render parent, AverageFace average) { 
         triangles = new ArrayList<>();
         this.parent = parent;
         for(Triple indices : average.mesh) {
@@ -79,6 +86,10 @@ public class Face {
         Collections.sort(triangles);    // make them in the order we'll draw them. 
     }
 
+    /**
+     * Helper function for calculating the position of a 
+     * point given its weight. 
+     */
     PVector getWeightedPointOffset(FaceParser face, float faceWeight, int index) {
         PVector offset = new PVector();
         offset = face.pointOffsets.get(index).copy()
@@ -88,6 +99,10 @@ public class Face {
             return offset;
     }
 
+    /**
+     * Helper function for calculating the colour of a 
+     * point given its weight. 
+     */
     PVector getWeightedColourOffset(FaceParser face, float faceWeight, int index) {
         PVector offset = new PVector();
         offset = face.colourOffsets.get(index).copy()
@@ -96,24 +111,12 @@ public class Face {
         return offset;
     }
 
-
-
-    public void draw() {
-        for(int i = 0; i < triangles.size(); i++) {
-            Triangle triangle = triangles.get(i);
-            PVector colour = triangle.colour();
-            // parent.noStroke();
-            parent.stroke(  colour.x, colour.y, colour.z);
-            parent.fill(    colour.x, colour.y, colour.z);
-            // parent.noFill();
-            parent.triangle(
-                triangle.p1.x, triangle.p1.y,
-                triangle.p2.x, triangle.p2.y,
-                triangle.p3.x, triangle.p3.y
-                );
-        }
-    }
-
+    /**
+     * General drawing function, 
+     * takes information about what shading and reflectance 
+     * model to use and then gets the colour Draw every triangle, with no them from 
+     * back to front, as in the painter's algorithms. 
+     */
     public void draw(
         ReflectanceModel reflectanceModel,
         ShadingModel shadingModel,
@@ -126,7 +129,6 @@ public class Face {
                 Triangle triangle = triangles.get(i);
                 parent.stroke(0);
                 parent.noFill();
-                // parent.fill(    colour.x, colour.y, colour.z);
                 parent.triangle(
                     triangle.p1.x, triangle.p1.y,
                     triangle.p2.x, triangle.p2.y,
@@ -163,6 +165,25 @@ public class Face {
 
     }
 
+
+    /**
+     * Basic drawing function, not used
+     * in final submission.   
+     */
+    public void draw() {
+        for(int i = 0; i < triangles.size(); i++) {
+            Triangle triangle = triangles.get(i);
+            PVector colour = triangle.colour();
+            parent.stroke(  colour.x, colour.y, colour.z);
+            parent.fill(    colour.x, colour.y, colour.z);
+            parent.triangle(
+                triangle.p1.x, triangle.p1.y,
+                triangle.p2.x, triangle.p2.y,
+                triangle.p3.x, triangle.p3.y
+                );
+        }
+    }
+
     public void scale(float scaleFactor) {
         for(Triangle triangle : triangles) {
             triangle.scale(scaleFactor);
@@ -174,25 +195,4 @@ public class Face {
             triangle.translate(translateVector);
         }
     }
-
-    /**
-     * What do we need to do for flat shading?
-     * Say that all of each triangle is the 
-     * same colour. 
-     * 
-     * To find the colour of the triangle, 
-     * find the normal to the surface of the triangle.
-     * 
-     * Do the dot product of the normal to the triangle 
-     * with the viewing direction, which is 
-     * (0,0,1).
-     * Lectures use intensity as 3 so lets do that.
-     */
-    // public void flatShade(PVector incidence, float intensity, float diffuseCoefficient) {
-    //     PVector tangent1 =  
-    // }
-
-    
-
-
 }
