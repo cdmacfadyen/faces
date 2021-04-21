@@ -170,43 +170,80 @@ public class Render extends PApplet {
         if(pointInTriangle(new PVector(mouseX, mouseY))) {
             interpolationPoint = new PVector(mouseX, mouseY);
 
-            float distFace1 = interpolationPoint.dist(weightTriangleP1);
-            float distFace2 = interpolationPoint.dist(weightTriangleP2);
-            float distFace3 = interpolationPoint.dist(weightTriangleP3);
+            // float distFace1 = interpolationPoint.dist(weightTriangleP1);
+            // float distFace2 = interpolationPoint.dist(weightTriangleP2);
+            // float distFace3 = interpolationPoint.dist(weightTriangleP3);
 
             // float maxDist = (weightTriangleP3.dist(weightTriangleP2) * sqrt(3) / 2f) ;
             // a^2 + b^2 = c^2
             // width ^ 2 + height ^2 = (width/2)^2
             // height = sqrt(width^2 - (width/2)^2)
-            float edgeLength = weightTriangleP3.dist(weightTriangleP2);
+            // float edgeLength = weightTriangleP3.dist(weightTriangleP2);
             
-            float maxDist = weightTriangleP3.dist(weightTriangleP2);
-            // float maxDist = sqrt(pow(edgeLength,2) - pow(edgeLength / 2,2));
+            // float maxDist = weightTriangleP3.dist(weightTriangleP2);
+            // // float maxDist = sqrt(pow(edgeLength,2) - pow(edgeLength / 2,2));
 
-            float face1Weight = 1f - (distFace1 / maxDist);
-            float face2Weight = 1f - (distFace2 / maxDist);
-            float face3Weight = 1f - (distFace3 / maxDist);
+            // float face1Weight = 1f - (distFace1 / maxDist);
+            // float face2Weight = 1f - (distFace2 / maxDist);
+            // float face3Weight = 1f - (distFace3 / maxDist);
 
-            float sum = face1Weight + face2Weight + face3Weight;
-            face1Weight /= sum;
-            face2Weight /= sum;
-            face3Weight /= sum;
+            // float sum = face1Weight + face2Weight + face3Weight;
+            // face1Weight /= sum;
+            // face2Weight /= sum;
+            // face3Weight /= sum;
+
+            // faceWeights.set(0, face1Weight);
+            // faceWeights.set(1, face2Weight);
+            // faceWeights.set(2, face3Weight);
+
+
+            
+
+            // String weightMsg = "1: " + face1Weight + " 2: " + face2Weight + " 3: " + face3Weight;
+            // System.out.println(weightMsg);
+            // System.out.println(face1Weight + face2Weight + face3Weight);
+
+            // String dists = "1-2: " + weightTriangleP1.dist(weightTriangleP2) + " 1-3: " +
+            //     weightTriangleP1.dist(weightTriangleP3) + " 2-3: " + weightTriangleP2.dist(weightTriangleP3);
+
+            // System.out.println(dists);
+
+            // // none of that actually works
+            /**
+             * Instead we can work out the area of the 
+             * triangles if we replaced the closest point with 
+             * the new point and then divide it 
+             * by the total area of the first triangle. 
+             * Easy.
+             */
+
+            float face1Area = areaOfTriangle(interpolationPoint, weightTriangleP2, weightTriangleP3);
+            float face2Area = areaOfTriangle(interpolationPoint, weightTriangleP1, weightTriangleP3);
+            float face3Area = areaOfTriangle(interpolationPoint, weightTriangleP1, weightTriangleP2);
+
+            float totalArea = areaOfTriangle(weightTriangleP1, weightTriangleP2, weightTriangleP3);
+
+            float face1Weight = face1Area / totalArea;
+            float face2Weight = face2Area / totalArea;
+            float face3Weight = face3Area / totalArea;
+
+            System.out.println("w1: " + face1Weight + " w2: " + face2Weight + "w3: " + face3Weight);
+            System.out.println("sum:" + (face1Weight + face2Weight + face3Weight));
 
             faceWeights.set(0, face1Weight);
             faceWeights.set(1, face2Weight);
             faceWeights.set(2, face3Weight);
-            
-            String weightMsg = "1: " + face1Weight + " 2: " + face2Weight + " 3: " + face3Weight;
-            System.out.println(weightMsg);
-            System.out.println(face1Weight + face2Weight + face3Weight);
 
-            String dists = "1-2: " + weightTriangleP1.dist(weightTriangleP2) + " 1-3: " +
-                weightTriangleP1.dist(weightTriangleP3) + " 2-3: " + weightTriangleP2.dist(weightTriangleP3);
-
-            System.out.println(dists);
-            
             redraw();
         }
+    }
+
+    public float areaOfTriangle(PVector p1, PVector p2, PVector p3) {
+        PVector v1 = p1.copy().sub(p2);
+        PVector v2 = p1.copy().sub(p3);
+
+        float area = v1.cross(v2).mag() * 0.5f; // from https://en.wikipedia.org/wiki/Triangle#Computing_the_area_of_a_triangle
+        return area;
     }
 
     // from https://blackpawn.com/texts/pointinpoly/
