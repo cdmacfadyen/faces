@@ -133,25 +133,25 @@ public class Render extends PApplet {
         fill(0,127,0,127);
         stroke(0);
         
-
+        // draw the weight selection triangle.
         triangle(
             weightTriangleP1.x, weightTriangleP1.y,
             weightTriangleP2.x, weightTriangleP2.y,
             weightTriangleP3.x, weightTriangleP3.y
-            );
+        );
 
-        fill(255,0,0);
         
+        // draw where the user clicked in the triangle.
+        fill(255,0,0);
         circle(interpolationPoint.x, interpolationPoint.y, UNIT_SIZE * 5);
+
         if (drawingAverage) {
             testAverageFace.draw();
-            // System.out.println("Average");
         } else {
-            // testFace.draw();
+            // draw the face.
             Face interpolated = new Face(this, averageFace, facesToInterpolate, faceWeights);
             interpolated.scale(0.003f);
             interpolated.translate(new PVector(width/2, height/2));
-            // interpolated.draw();
             interpolated.draw(
                 reflectanceModel,
                 shadingModel,
@@ -159,7 +159,6 @@ public class Render extends PApplet {
                 lightIntensity, 
                 diffuseCoefficient
                 );
-            // System.out.println("Interpolated");
         }
         System.out.println("Rendered.");
     }
@@ -237,7 +236,11 @@ public class Render extends PApplet {
             redraw();
         }
     }
-
+    /**
+     * The area of a triangle is half of the 
+     * magnitude of the cross product of 
+     * the vectors going from a point to the other two. 
+     */
     public float areaOfTriangle(PVector p1, PVector p2, PVector p3) {
         PVector v1 = p1.copy().sub(p2);
         PVector v2 = p1.copy().sub(p3);
@@ -247,6 +250,11 @@ public class Render extends PApplet {
     }
 
     // from https://blackpawn.com/texts/pointinpoly/
+    /**
+     * Checks if a given point is in the 
+     * weight interpolation triangle.
+     * 
+     */
     public boolean pointInTriangle(PVector point) {
         if(
             sameSide(   point, weightTriangleP1, weightTriangleP2, weightTriangleP3)
@@ -259,6 +267,10 @@ public class Render extends PApplet {
         }
     }
 
+    // from https://blackpawn.com/texts/pointinpoly/
+    /**
+     * Utility function for the pointInTriangle function.
+     */
     public boolean sameSide(PVector p1,PVector p2,PVector a,PVector b) {
         PVector cp1 = b.copy().sub(a).cross(p1.copy().sub(a));
         PVector cp2 = b.copy().sub(a).cross(p2.copy().sub(a));
@@ -269,7 +281,4 @@ public class Render extends PApplet {
             return false;
         }
     }
-
-
-
 }
