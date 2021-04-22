@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 
+import org.graalvm.compiler.nodes.NodeView.Default;
+
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -24,8 +26,8 @@ public class Render extends PApplet {
     PVector lightIncidence = new PVector(0,0,1); 
     float diffuseCoefficient = 1f;
 
-    ReflectanceModel reflectanceModel;
-    ShadingModel shadingModel;
+    static ReflectanceModel reflectanceModel;
+    static ShadingModel shadingModel;
 
     PVector weightTriangleP1;
     PVector weightTriangleP2;
@@ -40,6 +42,47 @@ public class Render extends PApplet {
             System.out.println("First argument must be path to face data directory.");
             System.exit(1);
         }
+
+        if (args.length > 1) {
+            for(int i = 0; i < args.length; i++) {
+                // in case i implement more shading. 
+                // if(args[i] == "--shading") {
+                //     switch (args[i+1]) {
+                //         case "flat": {
+                //             shadingModel = ShadingModel.FLAT_SHADING;
+                //         }
+                //     }
+
+                // }
+                if (args[i].equals("--reflectance")) {
+                    switch(args[i+1]) {
+                        case "mesh": {
+                            reflectanceModel = ReflectanceModel.MESH_ONLY;
+                            break;
+                        }
+                        case "none": {
+                            reflectanceModel = ReflectanceModel.NONE;
+                            break;
+                        }
+                        case "lambert": {
+                            reflectanceModel = ReflectanceModel.LAMBERT;
+                            break;
+                        }
+                        default: {
+                            System.out.println("Invalid option for --reflectance: " + 
+                                args[i+1]);
+                            System.out.println("\tMust be one of mesh | none | lambert");
+                            System.exit(1);
+                        }
+                    }
+                }
+            }
+        } else {
+            // default
+            reflectanceModel = ReflectanceModel.LAMBERT;
+        }
+        // only have the option of flat shading anyway. 
+        shadingModel = ShadingModel.FLAT_SHADING;
 
         String[] appletArgs = new String[] {"Render"};
         faceDataDir = args[0];
@@ -74,8 +117,7 @@ public class Render extends PApplet {
 
         interpolationPoint = (weightTriangleP1.copy().add(weightTriangleP2).add(weightTriangleP3)).mult(0.333f);
         
-        shadingModel = ShadingModel.FLAT_SHADING;
-        reflectanceModel = ReflectanceModel.LAMBERT;
+
 
         drawingAverage = false;
         // basic
