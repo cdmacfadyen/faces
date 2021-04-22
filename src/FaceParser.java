@@ -24,9 +24,6 @@ public class FaceParser {
     }
 
     public void loadFace(String dataDir, String index) {
-        System.out.println(dataDir);
-        System.out.println(index);
-
         String shPath  = dataDir + "/sh_" + index + ".csv";
         String txPath = dataDir + "/tx_" + index + ".csv";
         String txWeightPath = dataDir + "/tx_ev.csv"; 
