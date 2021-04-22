@@ -229,7 +229,7 @@ public class Render extends PApplet {
             float face2Weight = face2Area / totalArea;
             float face3Weight = face3Area / totalArea;
 
-            System.out.println("Weight 1: " + face1Weight + "  Weight 2: " + face2Weight + "Weight 3: " + face3Weight);
+            System.out.println("Weight 1: " + face1Weight + "  Weight 2: " + face2Weight + " Weight 3: " + face3Weight);
             System.out.println("\tSum of weights:" + (face1Weight + face2Weight + face3Weight));
 
             faceWeights.set(0, face1Weight);
